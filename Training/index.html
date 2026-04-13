@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training - Atomicwork</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background: linear-gradient(165deg, #F4E4FF 0%, #DAD2FF 30%, #FFEBF7 60%, #FFF 100%);
+      color: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(25deg, #4F1F72 4.07%, #702EA3 25.38%, #160820 96.71%);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    header a {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    header .logo {
+      width: 36px; height: 36px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 1.1rem;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    main {
+      max-width: 720px;
+      width: 100%;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .breadcrumb {
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 1.5rem;
+    }
+
+    .breadcrumb a {
+      color: #702EA3;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .welcome h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #160820;
+    }
+
+    .welcome p {
+      color: #555;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+
+    .guide-list {
+      list-style: none;
+    }
+
+    .guide-list li {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(131, 110, 216, 0.15);
+      border-radius: 10px;
+      margin-bottom: 0.75rem;
+    }
+
+    .guide-list a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+
+    .guide-list a:hover {
+      background: rgba(244, 228, 255, 0.5);
+    }
+
+    .guide-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, #F4E4FF, #DAD2FF);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .guide-icon svg {
+      width: 20px; height: 20px;
+      color: #702EA3;
+    }
+
+    .guide-info strong {
+      display: block;
+      font-size: 0.95rem;
+      color: #160820;
+    }
+
+    .guide-info span {
+      font-size: 0.82rem;
+      color: #888;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #836ED8;
+    }
+
+    .empty-state svg {
+      width: 48px; height: 48px;
+      margin-bottom: 1rem;
+      color: #DAD2FF;
+    }
+
+    .empty-state p {
+      font-size: 1rem;
+    }
+
+    footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 1.5rem;
+      color: #836ED8;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="../">
+      <div class="logo">A</div>
+      <h1>Atomicwork</h1>
+    </a>
+  </header>
+
+  <main>
+    <div class="breadcrumb">
+      <a href="../">Home</a> &rsaquo; Training
+    </div>
+
+    <div class="welcome">
+      <h2>Training Guides</h2>
+      <p>Access training materials and guides below.</p>
+    </div>
+
+    <ul class="guide-list">
+      <li>
+        <a href="ai-agents-guide.html">
+          <div class="guide-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+            </svg>
+          </div>
+          <div class="guide-info">
+            <strong>AI Agents Guide</strong>
+            <span>Training guide on AI agents</span>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <!--
+      TO ADD A NEW TRAINING GUIDE:
+      Copy a <li>...</li> block above and update the href, title, and description.
+    -->
+  </main>
+
+  <footer>
+    &copy; 2026 Atomicwork
+  </footer>
+
+</body>
+</html>
