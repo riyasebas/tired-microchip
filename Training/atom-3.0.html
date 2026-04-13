@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introducing Atom 3.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Atomicwork Primary Purples */
+    --purple-700: #7C3AED;
+    --purple-600: #9B4FFC;
+    --purple-500: #A366FD;
+    --purple-400: #B786FB;
+
+    /* Atomicwork Accents */
+    --accent-pink: #F6B0BD;
+    --accent-peach: #F6C79F;
+    --accent-magenta: #E286DF;
+    --accent-lavender: #D2A8FF;
+
+    /* Atomicwork Backgrounds */
+    --bg-purple-tint: #F1E1FF;
+    --bg-gray: #F6F6FB;
+    --bg-white: #FFFFFF;
+    --bg-warm: #FFFAEF;
+
+    /* Text */
+    --text-primary: #1a1a2e;
+    --text-secondary: #5a5a72;
+    --text-light: #9CA3AF;
+    --border: #E5E7EB;
+
+    /* Utility */
+    --green: #10B981;
+    --green-light: #ECFDF5;
+    --orange: #F59E0B;
+    --orange-light: #FFFBEB;
+    --blue: #3B82F6;
+    --blue-light: #EFF6FF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #F5F5F7;
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* ── Sidebar ── */
+  .layout {
+    display: flex;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 0;
+    width: 260px;
+    min-width: 260px;
+    height: 100vh;
+    align-self: flex-start;
+    background: linear-gradient(180deg, #7B5EA7 0%, #8E72B5 10%, #A68BC5 25%, #BDA4D4 45%, #D4BEE3 65%, #E8D8F0 85%, #F5F5F7 100%);
+    border-right: none;
+    overflow-y: auto;
+    z-index: 100;
+    padding: 28px 0 48px;
+    scrollbar-width: thin;
+  }
+
+  .nav-group { margin-bottom: 4px; }
+
+  .nav-link {
+    display: block;
+    padding: 8px 24px 8px 28px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+
+  .nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .nav-link.active {
+    color: #fff;
+    font-weight: 700;
+    border-left-color: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.12);
+  }
+
+  .nav-link.top-level {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    padding: 10px 24px 10px 28px;
+  }
+
+  .nav-link.sub {
+    padding-left: 44px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .nav-link.sub.deeper {
+    padding-left: 56px;
+    font-size: 12.5px;
+  }
+
+  .nav-link.sub:hover, .nav-link.sub.active { color: #fff; }
+
+  /* ── Main ── */
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    background: #F5F5F7;
+  }
+
+  .hero-fade {
+    display: none;
+  }
+
+  .content-wrap {
+    max-width: none;
+    padding: 48px 146px 120px 138px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    margin: 0;
+    padding: 64px 108px 56px;
+    background: linear-gradient(160deg, #C49AC0 0%, #B48BBE 15%, #A07ABB 30%, #8D6AB8 45%, #7B5EA7 60%, #6D5199 75%, #60478E 90%, #553F82 100%);
+    border-bottom: none;
+    position: relative;
+    z-index: 110;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(210, 160, 220, 0.25) 0%, rgba(180, 120, 200, 0.1) 50%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: 20%;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(160, 130, 210, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: none;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 48px;
+  }
+
+  .hero-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+    align-items: flex-end;
+    padding-bottom: 4px;
+  }
+
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .hero h1 {
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    color: #fff;
+    margin-bottom: 20px;
+    line-height: 1.1;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.7;
+    max-width: 640px;
+  }
+
+  .hero-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.95);
+    backdrop-filter: blur(6px);
+    white-space: nowrap;
+  }
+
+  .hero-note { display: none; }
+
+  /* ── Sections ── */
+  section {
+    margin-bottom: 48px;
+    scroll-margin-top: 24px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--purple-600);
+    margin-bottom: 8px;
+  }
+
+  section h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+
+  section h3 {
+    font-size: 17.5px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    margin-top: 32px;
+    color: var(--text-primary);
+  }
+
+  section p {
+    margin-bottom: 14px;
+    color: var(--text-primary);
+    line-height: 1.7;
+  }
+
+  /* ── Dark highlight block ── */
+  .dark-block {
+    background: var(--text-primary);
+    color: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    margin: 24px 0;
+  }
+
+  .dark-block h3 { color: #fff; margin-top: 0; }
+  .dark-block p { color: rgba(255,255,255,0.75); }
+  .dark-block strong { color: #fff; }
+
+  /* ── Callout ── */
+  .callout {
+    padding: 18px 22px;
+    border-radius: 12px;
+    margin: 20px 0;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .callout p { margin-bottom: 0; font-size: 14px; }
+  .callout strong { font-weight: 700; }
+
+  .callout.purple {
+    background: var(--bg-purple-tint);
+    border-left: 4px solid var(--purple-700);
+  }
+
+  .callout.green {
+    background: var(--green-light);
+    border-left: 4px solid var(--green);
+  }
+
+  .callout.blue {
+    background: var(--blue-light);
+    border-left: 4px solid var(--blue);
+  }
+
+  /* ── Upgrade cards ── */
+  .upgrade-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .upgrade-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 22px;
+    text-align: center;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .upgrade-card:hover {
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .upgrade-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 16px;
+  }
+
+  .upgrade-icon.purple { background: var(--bg-purple-tint); }
+  .upgrade-icon.blue { background: var(--blue-light); }
+  .upgrade-icon.green { background: var(--green-light); }
+
+  .upgrade-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .upgrade-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+    line-height: 1.55;
+  }
+
+  /* ── Stats ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .stat-card {
+    text-align: center;
+    padding: 28px 16px;
+    border-radius: 14px;
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+  }
+
+  .stat-number {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 4px;
+  }
+
+  .stat-number.purple { color: var(--purple-700); }
+  .stat-number.green { color: var(--green); }
+  .stat-number.blue { color: var(--blue); }
+
+  .stat-label { font-size: 13px; color: var(--text-secondary); }
+
+  /* ── Feature list ── */
+  .feature-list {
+    list-style: none;
+    margin: 16px 0;
+  }
+
+  .feature-list li {
+    padding: 14px 0 14px 34px;
+    position: relative;
+    border-bottom: 1px solid #f0f0f4;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .feature-list li:last-child { border-bottom: none; }
+
+  .feature-list li::before {
+    content: '';
+    position: absolute;
+    left: 6px; top: 20px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--bg-purple-tint);
+    border: 2px solid var(--purple-500);
+  }
+
+  .feature-list li strong { font-weight: 700; }
+
+  /* ── Tabs ── */
+  .tabs-container {
+    margin: 24px 0;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bg-white);
+  }
+
+  .tabs-header {
+    display: flex;
+    background: var(--bg-gray);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    padding: 12px 22px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+
+  .tab-btn:hover { color: var(--text-primary); }
+
+  .tab-btn.active {
+    color: var(--purple-700);
+    border-bottom-color: var(--purple-700);
+    background: var(--bg-white);
+    font-weight: 600;
+  }
+
+  .tab-panel { display: none; padding: 24px; }
+  .tab-panel.active { display: block; }
+  .tab-panel p { font-size: 14px; }
+
+  /* ── Comparison table ── */
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14.5px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .comparison-table th {
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--bg-gray);
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f4;
+    vertical-align: top;
+    line-height: 1.55;
+  }
+
+  .comparison-table tr:last-child td { border-bottom: none; }
+
+  .comparison-table .label-col {
+    font-weight: 700;
+    width: 130px;
+    background: var(--bg-gray);
+  }
+
+  .comparison-table .old { color: var(--text-secondary); }
+  .comparison-table .new { color: var(--purple-700); font-weight: 600; }
+
+  /* ── Rollout table ── */
+  .rollout-grid {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 16px 0;
+    font-size: 14.5px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .rollout-grid th {
+    padding: 12px 16px;
+    background: var(--bg-gray);
+    font-weight: 700;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rollout-grid td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f4;
+    vertical-align: top;
+    background: var(--bg-white);
+  }
+
+  .rollout-grid tr:last-child td { border-bottom: none; }
+
+  .status-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+  }
+
+  .status-badge.testing { background: var(--orange-light); color: #B45309; }
+  .status-badge.live { background: var(--green-light); color: #047857; }
+  .status-badge.review { background: var(--blue-light); color: #1D4ED8; }
+
+  .rollout-date { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* ── Teams tabs visual ── */
+  .teams-tabs-visual {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .teams-tab-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 20px;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+
+  .teams-tab-card:hover { box-shadow: 0 4px 16px rgba(124, 58, 237, 0.06); }
+
+  .teams-tab-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+
+  .teams-tab-card h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 8px; }
+
+  .teams-tab-card p {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 0;
+  }
+
+  /* ── Action banner ── */
+  .action-banner {
+    background: var(--text-primary);
+    color: #fff;
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 24px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .action-banner .icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+
+  .action-banner h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--accent-peach);
+  }
+
+  .action-banner p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 0;
+    line-height: 1.6;
+  }
+
+  /* ── FAQ ── */
+  .faq-list { margin: 16px 0; }
+
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    background: var(--bg-white);
+    transition: box-shadow 0.2s;
+  }
+
+  .faq-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    background: var(--bg-white);
+    user-select: none;
+    gap: 16px;
+  }
+
+  .faq-question:hover { background: var(--bg-gray); }
+
+  .faq-chevron {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    color: var(--text-light);
+  }
+
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+  .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+
+  .faq-answer-inner {
+    padding: 0 20px 20px;
+    font-size: 14.5px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* ── Coming soon ── */
+  .coming-soon {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: var(--bg-purple-tint);
+    color: var(--purple-700);
+    margin-left: 8px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── Divider ── */
+  .section-divider {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 48px 0;
+  }
+
+  /* ── Mobile ── */
+  .mobile-toggle {
+    display: none;
+    position: fixed;
+    top: 14px; left: 14px;
+    z-index: 200;
+    background: #7B5EA7;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 90;
+  }
+
+  @media (max-width: 900px) {
+    .layout { display: block; }
+    .sidebar { position: fixed; top: 0; left: 0; height: 100vh; transform: translateX(-100%); transition: transform 0.25s ease; width: 280px; min-width: 280px; }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay.open { display: block; }
+    .content-wrap { padding: 0 20px 100px; }
+    .hero { padding: 48px 24px 40px; }
+    .hero-inner { flex-direction: column; align-items: flex-start; }
+    .hero-right { align-items: flex-start; }
+    .hero-tags { flex-direction: column; }
+    .mobile-toggle { display: block; }
+    .stats-row, .upgrade-cards, .teams-tabs-visual { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; letter-spacing: -1px; }
+  }
+</style>
+</head>
+<body>
+
+<button class="mobile-toggle" onclick="toggleSidebar()">&#9776; Menu</button>
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- Hero (full width, outside layout) -->
+<section id="intro" class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Q1 2026</div>
+      <h1>Introducing Atom 3.0</h1>
+      <p class="hero-subtitle">Everything you need to know before talking to customers about Atom's intelligence upgrade, the new portal and Teams experience, and real-time streaming.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-tags">
+        <span class="hero-tag">&#x1f9e0; Smarter intelligence</span>
+        <span class="hero-tag">&#x1f4bb; Upgraded portal experience</span>
+        <span class="hero-tag">&#x26a1; Real-time streaming</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hero-fade"></div>
+
+<!-- Layout: sidebar + content -->
+<div class="layout">
+  <aside class="sidebar">
+    <nav>
+      <div class="nav-group">
+        <a class="nav-link top-level" href="#intro">Overview</a>
+      </div>
+      <div class="nav-group">
+        <a class="nav-link top-level" href="#intelligence">Major Upgrades</a>
+        <a class="nav-link sub" href="#intelligence">Intelligence layer</a>
+        <a class="nav-link sub" href="#portal">Portal experience</a>
+        <a class="nav-link sub deeper" href="#teams">Embedding Atom on MS Teams</a>
+        <a class="nav-link sub" href="#streaming">Streaming</a>
+      </div>
+      <div class="nav-group">
+        <a class="nav-link top-level" href="#rollout">Channel rollout</a>
+      </div>
+      <div class="nav-group">
+        <a class="nav-link top-level" href="#faqs">FAQs</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="content-wrap">
+
+  <!-- Why now -->
+  <section id="why-now">
+    <div class="section-label">Context</div>
+    <h2>Why now</h2>
+    <p>The bar for what an AI assistant should feel like has already been set — by Claude, ChatGPT, and every consumer AI tool in the market. People expect real-time responses, transparency into what the AI is doing, and conversations that understand context.</p>
+    <p>When they come to work and interact with an AI assistant that's slower and less conversational, the gap feels obvious. We've heard this sentiment echoed by customers and prospects. Atom needs to be smarter, faster, and more reliable; the conversational experience needs to feel modern.</p>
+    <div class="dark-block">
+      <h3>Atom 3.0 closes that gap — and then goes further.</h3>
+      <p>This isn't just about catching up to expectations. It's about what's now possible. The underlying AI models have taken a generational leap in reasoning and reliability. Atom can now understand vague requests without guessing wrong, execute multi-step actions reliably, and adapt its behavior to each customer's environment.</p>
+      <p>This also lays the foundation for where we're headed — an AI workforce of specialized agents that don't just answer questions but actively resolve issues, triage work, and operate across systems.</p>
+    </div>
+  </section>
+
+  <!-- What's changing -->
+  <section id="whats-changing">
+    <div class="section-label">Overview</div>
+    <h2>What's changing</h2>
+    <p>We're bringing three significant upgrades to Atom:</p>
+    <div class="upgrade-cards">
+      <div class="upgrade-card">
+        <div class="upgrade-icon purple">&#x1f9e0;</div>
+        <h4>Atom's intelligence layer</h4>
+        <p>Smarter, faster, more accurate responses with dramatically fewer hallucinations.</p>
+      </div>
+      <div class="upgrade-card">
+        <div class="upgrade-icon blue">&#x1f4bb;</div>
+        <h4>The portal experience</h4>
+        <p>A redesigned landing page with personalized prompts, and the full portal now embedded inside Microsoft Teams.</p>
+      </div>
+      <div class="upgrade-card">
+        <div class="upgrade-icon green">&#x26a1;</div>
+        <h4>Streaming responses</h4>
+        <p>Real-time, word-by-word responses with live reasoning trails across all channels.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What doesn't change -->
+  <section id="whats-not">
+    <h2>What doesn't change</h2>
+    <p>The core product remains the same. Users interact with Atom in the same channels — Slack, Teams, the browser extension (UAG), and the web portal. Request/incident creation, approvals, notifications, and service catalog access all work exactly as they do today. These upgrades make everything work better — they don't redesign how people use the product.</p>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- Intelligence Layer -->
+  <section id="intelligence">
+    <div class="section-label">Major Upgrade 1</div>
+    <h2>Smarter responses: Improving Atom's intelligence layer</h2>
+    <p>We've rebuilt Atom's AI engine from the ground up. The short version: <strong>Atom is now significantly better at understanding what employees actually need, more reliable when it takes actions, and noticeably faster.</strong></p>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-number purple">~50%</div>
+        <div class="stat-label">Accuracy improvement</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number green">20–25%</div>
+        <div class="stat-label">Faster responses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number blue">~50%</div>
+        <div class="stat-label">Fewer hallucinations</div>
+      </div>
+    </div>
+
+    <h3 id="intelligence-understanding">Atom understands what users actually mean</h3>
+    <p>We've made this claim before. What's changed now is the foundation underneath it.</p>
+    <p>Earlier, clarifying questions were prompt-engineered rules — Atom was explicitly told when to ask them and when not to. This is why sometimes it felt excessive or robotic. Now, Atom runs on a reasoning-based model that actually works through ambiguity before responding. It doesn't ask clarifying questions because it was told to — it asks them because it understands why clarification is needed. It handles multiple questions in one message. It distinguishes between similar catalog items. And it follows up more accurately in longer conversations.</p>
+
+    <div class="tabs-container">
+      <div class="tabs-header">
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-disamb')">Disambiguation</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-multi')">Multi-part queries</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-verified')">Verified answers</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-web')">Web search</button>
+      </div>
+      <div id="tab-disamb" class="tab-panel active">
+        <p><strong>Disambiguation in action:</strong> When someone types "I'm locked out," Atom identifies that there are multiple possible meanings, evaluates what it knows about the user, and asks a specific question: "Are you locked out of the physical office, or a specific app?"</p>
+      </div>
+      <div id="tab-multi" class="tab-panel">
+        <p><strong>Multi-part queries handled cleanly:</strong> When a user asks about both the holiday calendar and the remote work policy in one message, Atom identifies both questions, responds to each separately, and clearly states what it found versus what it couldn't find.</p>
+      </div>
+      <div id="tab-verified" class="tab-panel">
+        <p><strong>Verified answers:</strong> When a verified answer exists, Atom surfaces it and will try to explicitly call it out — e.g., "Here's an FAQ I found" — so users know the response is coming from a trusted, admin-curated source rather than a general search.</p>
+      </div>
+      <div id="tab-web" class="tab-panel">
+        <p><strong>Web search:</strong> Atom searches trusted external sources (like vendor documentation) alongside internal knowledge. This is configurable per customer.</p>
+      </div>
+    </div>
+
+    <div class="callout purple">
+      <p><strong>Configurable per customer:</strong> We can now tune Atom's behavior at the tenant level — tone, clarification depth, fallback behavior, how aggressively it disambiguates. A customer who wants Atom to ask more clarifying questions before resolving can have that. One who wants minimal friction can have the opposite. Today this is managed by our team; self-service configuration for admins is coming soon.</p>
+    </div>
+
+    <h3 id="intelligence-hallucinations">Atom doesn't make things up anymore</h3>
+    <p>When Atom doesn't have the answer, it now clearly says so instead of generating a plausible-sounding but wrong response.</p>
+    <p>So when asked "What is our remote work policy? Can I work from another country for three weeks?" — and no such policy exists in the knowledge base — a likely response will be: <em>"I couldn't find a company-specific remote work policy. I can't confirm whether you're allowed to work from another country."</em></p>
+    <p>We can expect up to a <strong>50% reduction in hallucinated responses</strong>.</p>
+
+    <h3 id="intelligence-actions">Atom is more reliable when taking actions</h3>
+    <p>Previously, Atom used an in-house orchestration layer to execute actions — lookups, request creation, automations. There was a translation step between the AI model understanding what to do and actually doing it. That's where things would break: Atom understood the request but fumbled the execution.</p>
+    <p>Atom now connects to tools directly, which means the model itself decides what to call, with what inputs, and in what order. The result: actions execute more consistently, with fewer errors, fewer "I couldn't understand that" moments, and fewer failed executions.</p>
+
+    <h3 id="intelligence-speed">Speed &amp; data privacy</h3>
+    <p>Response times are <strong>20–25% faster</strong> and significantly more consistent. Users will notice the difference, especially on questions that previously felt sluggish.</p>
+    <div class="callout green">
+      <p><strong>Data privacy is locked down by default.</strong> All AI processing uses enterprise-grade infrastructure with zero data retention. No employee data is stored, logged, or used for model training. This is our default configuration for every tenant.</p>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- Portal -->
+  <section id="portal">
+    <div class="section-label">Major Upgrade 2</div>
+    <h2>Upgrading the Atom portal experience</h2>
+    <p>Atom's portal experience is getting significant upgrades — a personalized landing page that helps employees get started faster. This is especially important for customers on Microsoft Teams, since the full portal experience will be embedded directly inside Teams.</p>
+
+    <h3>Personalized prompts replace the blank chat window</h3>
+    <p>When employees open Atom on the portal or the browser extension, they now see personalized prompts instead of a blank chat window.</p>
+    <ul class="feature-list">
+      <li><strong>Scoped to permissions:</strong> Prompts are pre-generated from the tenant's published knowledge articles and service catalogs, scoped to what the user is allowed to see. Unpublished catalogs or restricted content won't surface as prompts.</li>
+      <li><strong>Contextual to the employee:</strong> First-time employees see prompts around knowledge, incidents, and service requests — things like "How do I request a new laptop?" or "What's the guest Wi-Fi password?" Returning employees see prompts about their active requests first (e.g., "Check status of my Salesforce access request"), so they can pick up where they left off with one click.</li>
+    </ul>
+
+    <ul class="feature-list">
+      <li><strong>Role-level personalization <span class="coming-soon">Coming soon</span>:</strong> Prompts tailored based on the user's role or function, informed by what teammates in the same role are asking. This is built and architected but not yet enabled.</li>
+      <li><strong>Catalog discovery <span class="coming-soon">Coming soon</span>:</strong> Surfacing relevant catalog items (services employees can request) as prompts, not just knowledge articles.</li>
+    </ul>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- Teams -->
+  <section id="teams">
+    <div class="section-label">Major Upgrade 2 (continued)</div>
+    <h2>Embedding the Atom portal into Microsoft Teams</h2>
+    <p>We're fundamentally transforming how Atom works inside Microsoft Teams. Instead of the current native app experience — where users interact with Atom in a standard Teams chat thread — we're embedding the full Atomicwork portal directly into Teams, so users get our complete portal experience without leaving Teams.</p>
+
+    <h3>Why this matters</h3>
+    <p>The current Teams experience depends on Microsoft's messaging infrastructure — one long, never-ending thread. There's no way to separate conversations, no threading, and no easy way to go back and reference past interactions. It also can't properly support the rich interactions Atom is capable of or show our full range of UI elements.</p>
+    <p>By embedding the portal, we solve both problems. Users get a structured, full-featured experience — and as long as Atomicwork's platform is up, it works.</p>
+
+    <h3 id="teams-tabs">The three tabs</h3>
+    <div class="teams-tabs-visual">
+      <div class="teams-tab-card">
+        <div class="teams-tab-icon" style="background: var(--bg-purple-tint);">&#x1f4ac;</div>
+        <h4>Chat</h4>
+        <p>Full portal chat interface. Conversation history in a collapsible sidebar, ability to start new conversations, inline notifications. Identical to the portal and browser extension.</p>
+      </div>
+      <div class="teams-tab-card">
+        <div class="teams-tab-icon" style="background: var(--blue-light);">&#x1f514;</div>
+        <h4>Notifications</h4>
+        <p>All notifications in one place: request updates, change comments, approvals, workflow status. Also pushes to Teams Activity feed for desktop and mobile alerts.</p>
+      </div>
+      <div class="teams-tab-card">
+        <div class="teams-tab-icon" style="background: var(--green-light);">&#x2705;</div>
+        <h4>Approvals</h4>
+        <p>A dedicated tab for all active approvals. Approvers manage everything in one place instead of digging through chat history.</p>
+      </div>
+    </div>
+
+    <h3 id="teams-details">What users should know</h3>
+    <ul class="feature-list">
+      <li><strong>Authentication is seamless:</strong> The app inherits the user's existing Microsoft Teams login — no separate sign-in required.</li>
+      <li><strong>Custom branding carries over:</strong> Your branded experience — Atom's name, the avatar — carries over to the embedded portal.</li>
+      <li><strong>Requests are not affected:</strong> All existing requests, statuses, and associated data carry over completely. This change only affects the conversational interface.</li>
+      <li><strong>Request history carries over:</strong> All requests from the past 6 months will be accessible through the Notifications tab.</li>
+      <li><strong>Dark mode and mobile:</strong> The embedded portal supports dark mode (inherits device-level settings) and is mobile responsive — the same app works on Teams mobile.</li>
+      <li><strong>Coming soon — voice and vision:</strong> The initial launch does not include real-time voice and camera capabilities in Teams due to Microsoft SDK requirements. Users can still send images and screenshots alongside their messages.</li>
+    </ul>
+
+    <h3 id="teams-comparison">Before vs. after</h3>
+    <table class="comparison-table">
+      <thead>
+        <tr><th class="label-col">Aspect</th><th>Native Teams app (Current)</th><th>Embedded portal (New)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="label-col">Architecture</td><td class="old">Chat app via Microsoft messaging layer</td><td class="new">Full portal embedded in Teams app</td></tr>
+        <tr><td class="label-col">Reliability</td><td class="old">Dependent on Microsoft's messaging infrastructure</td><td class="new">Only depends on Atomicwork platform uptime</td></tr>
+        <tr><td class="label-col">Chat interface</td><td class="old">Standard Teams chat thread</td><td class="new">Full portal chat with sidebar, history, threading</td></tr>
+        <tr><td class="label-col">Notifications</td><td class="old">In-chat messages</td><td class="new">Dedicated tab + native Teams activity feed push</td></tr>
+        <tr><td class="label-col">Approvals</td><td class="old">Buried in chat history</td><td class="new">Dedicated approvals tab</td></tr>
+        <tr><td class="label-col">UI richness</td><td class="old">Limited to what Teams chat supports</td><td class="new">Full portal UI with all capabilities</td></tr>
+        <tr><td class="label-col">Authentication</td><td class="old">Same (Teams SSO)</td><td class="new">Same (Teams SSO)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="action-banner">
+      <div class="icon">&#x26a0;&#xfe0f;</div>
+      <div>
+        <h4>Action required: Manual update by admins</h4>
+        <p>This is not an auto-update. When the new Teams app is approved by Microsoft (currently in review), customers will see an "Update Now" option in their Teams admin dashboard against the Atomicwork app. The admin needs to manually update for the new experience to go live for all users in that tenant.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- Streaming -->
+  <section id="streaming">
+    <div class="section-label">Major Upgrade 3</div>
+    <h2>Streaming: Real-time responses and reasoning trails</h2>
+    <p>Atom is getting native streaming across all channels. Instead of waiting for the entire response to be generated before displaying it, answers will flow in real time — word by word — just like ChatGPT, Claude, or any modern AI assistant.</p>
+    <p>Alongside streaming, Atom will show live reasoning trails: what it's doing, what it's searching, what it found — all visible as the response is being generated.</p>
+
+    <h3>Why it matters</h3>
+    <p>Today, when a user asks Atom a question, they see a "Thinking..." indicator and then the full response appears all at once. For complex queries that take a few seconds, this creates a perception of slowness even when the actual processing time is reasonable.</p>
+    <p>Streaming changes this. Users see Atom responding immediately — text flowing in progressively. Combined with the intelligence layer upgrade that already makes responses 20–25% faster, the experience will feel dramatically more responsive.</p>
+
+    <h3>What it looks like</h3>
+    <div class="tabs-container">
+      <div class="tabs-header">
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-stream')">Streaming</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-reasoning')">Reasoning trails</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-longrun')">Long-running tasks</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-convo')">Conversation view</button>
+      </div>
+      <div id="tab-stream" class="tab-panel active">
+        <p><strong>Streaming responses:</strong> When a user sends a message, they immediately see Atom begin responding. Text flows in progressively, mirroring what users now expect from any AI-powered tool.</p>
+      </div>
+      <div id="tab-reasoning" class="tab-panel">
+        <p><strong>"Show your work" reasoning trails:</strong> Users see what Atom is doing in real time: "Searching knowledge base..." &#8594; "Found 3 relevant articles..." &#8594; "Checking your service catalog..." &#8594; the actual response. This transparency builds trust.</p>
+        <p style="margin-top:12px;">For admins, this goes deeper. They can click into any step in the reasoning trail and see exactly what Atom did — for example, if Atom triggered a password reset, the admin can see the exact action, its inputs, and the result. This is a significant improvement for troubleshooting and audit.</p>
+      </div>
+      <div id="tab-longrun" class="tab-panel">
+        <p><strong>Long-running task indicators:</strong> For actions that take longer — like waiting for an approval — the conversation won't freeze. Users see an in-progress status indicator, can continue chatting with Atom, and the status resolves gracefully when the action completes.</p>
+      </div>
+      <div id="tab-convo" class="tab-panel">
+        <p><strong>Redesigned conversation view:</strong> The Request Details page will include a Conversations tab showing the complete conversation flow including the reasoning trail (so admins can see what steps Atom took), and buttons/CTAs that were presented to the user.</p>
+      </div>
+    </div>
+
+    <div class="callout blue">
+      <p><strong>Important:</strong> Streaming is a presentation-layer change. It changes how responses appear on screen but doesn't change how Atom thinks or generates answers. The intelligence layer handles all reasoning. Accuracy, action reliability, and all the improvements from the intelligence upgrade remain unchanged.</p>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- Rollout -->
+  <section id="rollout">
+    <div class="section-label">Timelines</div>
+    <h2>Channel rollout</h2>
+
+    <h3>Portal</h3>
+    <table class="rollout-grid">
+      <thead><tr><th>Upgrade</th><th>Status</th><th>CG / Customer action</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Intelligence layer</strong></td><td><span class="status-badge testing">Internal testing</span><div class="rollout-date">Sandbox: April 3 &middot; GA: April 13</div></td><td>None. Backend upgrade — invisible to users.</td></tr>
+        <tr><td><strong>Personalized landing page</strong></td><td><span class="status-badge live">Live</span><div class="rollout-date">Live since March 17. Ongoing updates.</div></td><td>None. Available automatically.</td></tr>
+        <tr><td><strong>Streaming</strong></td><td><span class="status-badge testing">Internal testing</span><div class="rollout-date">Sandbox: April 3 &middot; GA: April 13</div></td><td>None. Backend upgrade — invisible to users.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Microsoft Teams</h3>
+    <table class="rollout-grid">
+      <thead><tr><th>Upgrade</th><th>Status</th><th>CG / Customer action</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Intelligence layer</strong></td><td><span class="status-badge testing">Internal testing</span><div class="rollout-date">Sandbox: April 3 &middot; GA: April 13</div></td><td>None. Backend upgrade — invisible to users.</td></tr>
+        <tr><td><strong>Embedded portal</strong></td><td><span class="status-badge review">In Microsoft review</span><div class="rollout-date">Expected GA: April 15</div></td><td>Manual update in Teams admin dashboard. No reinstall needed for end users.</td></tr>
+        <tr><td><strong>Streaming</strong></td><td><span class="status-badge testing">Requires manifest update</span><div class="rollout-date">Sandbox: April 3 &middot; GA: April 13</div></td><td>None. Backend upgrade — invisible to users.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Slack</h3>
+    <table class="rollout-grid">
+      <thead><tr><th>Upgrade</th><th>Status</th><th>CG / Customer action</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Intelligence layer</strong></td><td><span class="status-badge testing">Internal testing</span><div class="rollout-date">Sandbox: April 3 &middot; GA: April 13</div></td><td>None. Backend upgrade — invisible to users.</td></tr>
+        <tr><td><strong>Streaming</strong></td><td><span class="status-badge testing">Requires manifest update</span><div class="rollout-date">Sandbox: April 3 &middot; GA: April 13</div></td><td>None. Backend upgrade — invisible to users.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- FAQs -->
+  <section id="faqs">
+    <div class="section-label">Reference</div>
+    <h2>FAQs</h2>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>Will there be any disruption or downtime during any of the upgrades?</span><svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">No. The upgrades are seamless — no downtime, no user action required, no interruption to service. We manage the cutover on our side and it's designed to be invisible to end users.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>How do we know quality won't regress?</span><svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Two things. First, we test every engine change internally against a comprehensive set of real-world questions based on actual customer usage. Our benchmarks show ~50% accuracy improvement and 20–25% latency improvement.<br><br>Second, customers can measure the improvement themselves using the Test Suite. Create a baseline dataset now, re-run it after the upgrade, and see the results firsthand.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>Atom sometimes makes up answers — is that fixed?</span><svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Atom now gives significantly higher priority to verified answers and ingested topics. When it doesn't have the answer, it explicitly says so. Benchmarks show roughly a 50% reduction in fabricated answers.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>What if a user asks two unrelated questions in the same message?</span><svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Atom is now significantly better at handling multi-part queries — it identifies both questions and responds to each. The one exception is access requests using IGA, where the access flow can take priority. We recommend users submit access requests separately for the best experience.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>Does streaming affect accuracy?</span><svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Not at all. Streaming only changes how the response appears on screen — progressively instead of all at once. The intelligence layer handles all reasoning. It's purely a presentation-layer change.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>Is any customer data being sent to OpenAI?</span><svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Atom processes queries through OpenAI's enterprise infrastructure with zero data retention — nothing is stored, logged, or used for training. This is the highest security tier available and it's our default for all tenants.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>Can customers control how Atom behaves for their tenant?</span><svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Yes. We can now configure Atom's behavior per customer — tone, clarification depth, fallback behavior, disambiguation. Today this is managed by the Atomicwork team. We're building toward a self-service model where admins can edit Atom's behavior through plain-English instruction files.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>Are there new security implications with the Teams embed?</span><svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">No. Same SSO, same token-based access, encrypted communication throughout. No new security surface is introduced.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>What about conversation history when switching to the new Teams experience?</span><svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">All conversations from the last 6 months will be available. All requests and their full data are completely unaffected. The only thing that changes is the conversational interface.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>What if customers don't want to upgrade the Teams experience yet?</span><svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">That's fine — the update only applies when the admin explicitly clicks "Update Now." There's no auto-push. The current experience will continue to work.</div></div></div>
+    </div>
+  </section>
+
+  <div style="text-align:center; padding: 40px 0 0; color: var(--text-light); font-size: 12px;">
+    Atom 3.0 Internal Guide &middot; Atomicwork &middot; March 2026
+  </div>
+
+  </div><!-- end content-wrap -->
+  </div><!-- end main -->
+</div><!-- end layout -->
+
+<script>
+
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('section[id]');
+
+  function updateActiveNav() {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
+    navLinks.forEach(l => {
+      l.classList.remove('active');
+      if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const t = document.querySelector(link.getAttribute('href'));
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelector('.sidebar').classList.remove('open');
+      document.querySelector('.sidebar-overlay').classList.remove('open');
+    });
+  });
+
+  function switchTab(e, tabId) {
+    const c = e.target.closest('.tabs-container');
+    c.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    c.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  function toggleFaq(el) {
+    const item = el.closest('.faq-item');
+    const answer = item.querySelector('.faq-answer');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-answer').style.maxHeight = '0';
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  }
+
+  function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('open');
+    document.querySelector('.sidebar-overlay').classList.toggle('open');
+  }
+</script>
+</body>
+</html>
